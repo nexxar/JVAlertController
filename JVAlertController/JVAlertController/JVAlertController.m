@@ -836,11 +836,15 @@ __asm(
             }
             [button setTitle:action.title forState:UIControlStateNormal];
             [button setContentHorizontalAlignment:UIControlContentHorizontalAlignmentCenter];
-            [button setContentEdgeInsets:UIEdgeInsetsMake(1.0f, 0.0f, 0.0f, 0.0f)];
-            [button setContentEdgeInsets:UIEdgeInsetsMake(kJVActionSheetButtonVPaddingTop,
-                                                          kJVActionSheetButtonHPadding,
-                                                          kJVActionSheetButtonVPaddingBottom,
-                                                          kJVActionSheetButtonHPadding)];
+            if (!JVAC_SYSTEM_VERSION_GTE(@"7.0")) {
+                button.layer.cornerRadius = kJVActionSheetCancelButtonCornerRadius;
+
+            } else {
+                [button setContentEdgeInsets:UIEdgeInsetsMake(kJVActionSheetButtonVPaddingTop,
+                                                              kJVActionSheetButtonHPadding,
+                                                              kJVActionSheetButtonVPaddingBottom,
+                                                              kJVActionSheetButtonHPadding)];
+            }
             [button addTarget:self action:@selector(performAction:) forControlEvents:UIControlEventTouchUpInside];
             
             [buttons addObject:button];

@@ -33,6 +33,12 @@
 #import "JVCompatibilityMRC.h"
 #import <objc/runtime.h>
 #import <UIKit/UIKit.h>
+#import "UIViewController+JVAlertController.h"
+#import "JV-legacy-SDK.h"
+
+#define JVAC_SYSTEM_VERSION_GTE(v) \
+([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending)
+
 
 // JVAlertController is not meant to be instantiated directly,
 // which is why there is no JVAlertController.h
@@ -41,6 +47,8 @@
 // to be injected via the objc runtime as "UIAlertController"
 // Once this class and its accompanying files are imported into your project,
 // you can use the standard UIAlertController APIs freely on iOS 7
+
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
 
 @interface JVAlertController : UIViewController
 
@@ -60,6 +68,7 @@
 - (void)addTextFieldWithConfigurationHandler:(void (^)(UITextField *textField))configurationHandler;
 
 @end
+#endif
 
 @interface JVAlertController ()
 @property (nonatomic, JV_STRONG_PROPERTY) NSArray *actions;
@@ -210,7 +219,7 @@
 
 - (CGSize)preferredContentSize
 {
-    if (![self isPad]) {
+    if (![self isPad] && [super respondsToSelector:@selector(preferredContentSize)]) {
         return [super preferredContentSize];
     }
     
@@ -257,16 +266,8 @@
     _preferredStyle = preferredStyle;
     
     if (UIAlertControllerStyleAlert == self.preferredStyle) {
-        JVAlertTransitionDelegate *newDelegate = [JVAlertTransitionDelegate new];
-        self.alertTransitionDelegate = newDelegate;
-        JV_RELEASE_OBJECT(newDelegate);
-        self.transitioningDelegate = self.alertTransitionDelegate;
     }
     else {
-        JVActionSheetTransitionDelegate *newDelegate = [JVActionSheetTransitionDelegate new];
-        self.actionSheetTransitionDelegate = newDelegate;
-        JV_RELEASE_OBJECT(newDelegate);
-        self.transitioningDelegate = self.actionSheetTransitionDelegate;
     }
 }
 
@@ -429,7 +430,8 @@
 {
     if (!_actionSheetView) {
         _actionSheetView = [UIView new];
-        _actionSheetView.autoresizingMask = (UIViewAutoresizingFlexibleLeftMargin
+        _actionSheetView.autoresizingMask = (UIViewAutoresizingFlexibleHeight
+                                             | UIViewAutoresizingFlexibleLeftMargin
                                              | UIViewAutoresizingFlexibleRightMargin
                                              | UIViewAutoresizingFlexibleTopMargin);
         _actionSheetView.backgroundColor = [UIColor clearColor];
@@ -464,7 +466,7 @@
 
 - (UILabel *)actionSheetTitleView
 {
-    if (!_actionSheetTitleView) {
+    if (!_actionSheetTitleView && self.navigationController == nil) {
         _actionSheetTitleView = [UILabel new];
         _actionSheetTitleView.textColor = [JVAlertControllerStyles actionSheetTitleColor];
         _actionSheetTitleView.textAlignment = [JVAlertControllerStyles actionSheetTitleTextAlignment];
@@ -627,7 +629,9 @@ __asm(
             button.enabled = action.isEnabled;
             button.highlightedBackgroundColor = [JVAlertControllerStyles alertButtonHighlightedBackgroundColor];
             button.titleLabel.adjustsFontSizeToFitWidth = YES;
-            button.titleLabel.minimumScaleFactor = kJVAlertButtonMinimumScaleFactor;
+            if ([button.titleLabel respondsToSelector:@selector(setMinimumScaleFactor:)]) {
+                button.titleLabel.minimumScaleFactor = kJVAlertButtonMinimumScaleFactor;
+            }
             [button setTitle:action.title forState:UIControlStateNormal];
             [button setContentEdgeInsets:UIEdgeInsetsMake(kJVAlertButtonVPaddingTop,
                                                           kJVAlertButtonHPadding,
@@ -821,9 +825,19 @@ __asm(
     
     NSString *title = self.title && self.message ? self.title : self.message;
     NSString *message = self.title && self.message ? self.message : self.title;
-    
+
+    // it's the other way round in older iOS < 7.
+    if (!JVAC_SYSTEM_VERSION_GTE(@"7.0")) {
+        title = self.title;
+        message = self.message;
+    }
+
     if (title) {
-        self.actionSheetTitleView.text = title;
+        if (self.navigationController != nil) {
+            self.navigationController.title = title;
+        } else {
+            self.actionSheetTitleView.text = title;
+        }
     }
     
     if (message) {
@@ -855,14 +869,20 @@ __asm(
             button.enabled = action.isEnabled;
             button.highlightedBackgroundColor = [JVAlertControllerStyles actionSheetButtonHighlightedBackgroundColor];
             button.titleLabel.adjustsFontSizeToFitWidth = YES;
-            button.titleLabel.minimumScaleFactor = kJVActionSheetButtonMinimumScaleFactor;
+            if ([button.titleLabel respondsToSelector:@selector(setMinimumScaleFactor:)]) {
+                button.titleLabel.minimumScaleFactor = kJVActionSheetButtonMinimumScaleFactor;
+            }
             [button setTitle:action.title forState:UIControlStateNormal];
             [button setContentHorizontalAlignment:UIControlContentHorizontalAlignmentCenter];
-            [button setContentEdgeInsets:UIEdgeInsetsMake(1.0f, 0.0f, 0.0f, 0.0f)];
-            [button setContentEdgeInsets:UIEdgeInsetsMake(kJVActionSheetButtonVPaddingTop,
-                                                          kJVActionSheetButtonHPadding,
-                                                          kJVActionSheetButtonVPaddingBottom,
-                                                          kJVActionSheetButtonHPadding)];
+            if (!JVAC_SYSTEM_VERSION_GTE(@"7.0")) {
+                button.layer.cornerRadius = kJVActionSheetCancelButtonCornerRadius;
+
+            } else {
+                [button setContentEdgeInsets:UIEdgeInsetsMake(kJVActionSheetButtonVPaddingTop,
+                                                              kJVActionSheetButtonHPadding,
+                                                              kJVActionSheetButtonVPaddingBottom,
+                                                              kJVActionSheetButtonHPadding)];
+            }
             [button addTarget:self action:@selector(performAction:) forControlEvents:UIControlEventTouchUpInside];
             
             [buttons addObject:button];
@@ -941,6 +961,12 @@ __asm(
     NSString *title = self.title && self.message ? self.title : self.message;
     NSString *message = self.title && self.message ? self.message : self.title;
     
+    // it's the other way round in older iOS < 7.
+    if (!JVAC_SYSTEM_VERSION_GTE(@"7.0")) {
+        title = self.title;
+        message = self.message;
+    }
+
     CGFloat top = 0.0f;
     
     if (title) {
@@ -982,9 +1008,10 @@ __asm(
     CGFloat buttonHeight = kJVActionSheetButtonHeight - JVAC_PIXEL;
     
     NSInteger i=0;
-    
+
+    const CGFloat buttonSpacing = JVAC_SYSTEM_VERSION_GTE(@"7.0") ? 0.0f : kJVActionSheetButtonSpacing_legacyiOS;
     for (UIView *buttonSeparator in self.buttonSeparators) {
-        buttonSeparator.frame = CGRectMake(0.0f, i*kJVActionSheetButtonHeight, kJVActionSheetWidth, JVAC_PIXEL);
+        buttonSeparator.frame = CGRectMake(0.0f, i*(kJVActionSheetButtonHeight+buttonSpacing), kJVActionSheetWidth, JVAC_PIXEL);
         i++;
     }
     
@@ -999,7 +1026,7 @@ __asm(
             if (UIAlertActionStyleCancel != action.style) {
                 // cancel button added last
                 button = [self.buttons objectAtIndex:i];
-                button.frame = CGRectMake(0.0f, j*kJVActionSheetButtonHeight, buttonWidth, buttonHeight);
+                button.frame = CGRectMake(0.0f, j*(kJVActionSheetButtonHeight+buttonSpacing), buttonWidth, buttonHeight);
                 j++;
             }
             i++;
@@ -1072,6 +1099,10 @@ __asm(
                viewHeight - actionSheetViewSpacer - actionSheetHeight,
                kJVActionSheetWidth,
                actionSheetHeight);
+
+    if (self.isInPopover && [self respondsToSelector:@selector(setContentSizeForViewInPopover:)]) {
+        self.contentSizeForViewInPopover = [self preferredContentSize];
+    }
 }
 
 @end

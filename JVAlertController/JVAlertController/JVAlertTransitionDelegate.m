@@ -26,6 +26,8 @@
 #import "JVAlertControllerStyles.h"
 #import "JVAlertTransitionDelegate.h"
 #import "JVCompatibilityMRC.h"
+#import "JV-UIAlertController.h"
+#import "JV-UIViewController.h"
 
 @interface JVAlertTransitionDelegate ()
 @property (nonatomic, assign, getter=isPresenting) BOOL presenting;
@@ -87,6 +89,13 @@
     NSTimeInterval duration = [self transitionDuration:transitionContext];
     
     JV_WEAK_REFERENCE_FOR_BLOCK typeof(self) weakSelf = self;
+    __weak typeof(self) weakSelf = self;
+    __weak id <UIViewControllerContextTransitioning> weakTransitionContext = transitionContext;
+
+    void (^completionOfAnimation)(BOOL finished) = ^(BOOL finished) {
+        [weakTransitionContext completeTransition:YES];
+    };
+
     
     if (self.isPresenting) {
         if (fromViewController.navigationController) {
@@ -109,20 +118,31 @@
         [[transitionContext containerView] addSubview:self.obscureView];
         [[transitionContext containerView] addSubview:toView];
         
-        [UIView animateWithDuration:duration
-                              delay:0.0f
-             usingSpringWithDamping:kJVAlertAnimationSpringDamping
-              initialSpringVelocity:0
-                            options:0
-                         animations:
-         ^{
-             toView.transform = startingTransform;
-             weakSelf.obscureView.alpha = kJVAlertObscureViewAlpha;
-         }
-                         completion:
-         ^(BOOL finished) {
-             [transitionContext completeTransition:YES];
-         }];
+        void (^animations)(void) = ^{
+            toView.transform = startingTransform;
+            weakSelf.obscureView.alpha = kJVAlertObscureViewAlpha;
+        };
+
+        if ([UIView respondsToSelector:@selector(animateWithDuration:delay:usingSpringWithDamping:initialSpringVelocity:options:animations:completion:
+                                                 )]) {
+
+            [UIView animateWithDuration:duration
+                                  delay:0.0f
+                 usingSpringWithDamping:kJVAlertAnimationSpringDamping
+                  initialSpringVelocity:0
+                                options:0
+                             animations:animations
+                             completion:completionOfAnimation
+             ];
+        } else {
+            [UIView animateWithDuration:duration
+                                  delay:0.0f
+                                options:0
+                             animations:animations
+                             completion:completionOfAnimation
+             ];
+        }
+
     }
     else {
         if (toViewController.navigationController) {
@@ -133,24 +153,34 @@
         [[transitionContext containerView] addSubview:toView];
         [[transitionContext containerView] addSubview:self.obscureView];
         [[transitionContext containerView] addSubview:fromView];
+
+        void (^animations)(void) = ^{
+            fromView.transform = CGAffineTransformScale(fromView.transform,
+                                                        kJVAlertAnimationEndingScale,
+                                                        kJVAlertAnimationEndingScale);
+            fromView.alpha = 0.0f;
+            weakSelf.obscureView.alpha = 0.0f;
+        };
         
-        [UIView animateWithDuration:duration
-                              delay:0.0f
-             usingSpringWithDamping:kJVAlertAnimationSpringDamping
-              initialSpringVelocity:0
-                            options:0
-                         animations:
-         ^{
-             fromView.transform = CGAffineTransformScale(fromView.transform,
-                                                         kJVAlertAnimationEndingScale,
-                                                         kJVAlertAnimationEndingScale);
-             fromView.alpha = 0.0f;
-             weakSelf.obscureView.alpha = 0.0f;
-         }
-                         completion:
-         ^(BOOL finished) {
-             [transitionContext completeTransition:YES];
-         }];
+        if ([UIView respondsToSelector:@selector(animateWithDuration:delay:usingSpringWithDamping:initialSpringVelocity:options:animations:completion:
+                                                 )]) {
+
+            [UIView animateWithDuration:duration
+                                  delay:0.0f
+                 usingSpringWithDamping:kJVAlertAnimationSpringDamping
+                  initialSpringVelocity:0
+                                options:0
+                             animations:animations
+                             completion:completionOfAnimation
+             ];
+        } else {
+            [UIView animateWithDuration:duration
+                                  delay:0.0f
+                                options:0
+                             animations:animations
+                             completion:completionOfAnimation
+             ];
+        }
     }
 }
 

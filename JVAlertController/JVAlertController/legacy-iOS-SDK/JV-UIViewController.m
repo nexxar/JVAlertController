@@ -1,10 +1,8 @@
 //
-//  JVAlertTransitionDelegate.h
+//  JVAlertController.m
 //  JVAlertController
 //
 //  The MIT License (MIT)
-//
-//  Copyright (c) 2015 Jared Verdi
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy of
 //  this software and associated documentation files (the "Software"), to deal in
@@ -23,10 +21,27 @@
 //  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 //  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-#import <UIKit/UIKit.h>
-#import "JV-legacy-SDK.h"
+#import "JV-UIViewController.h"
 
-@interface JVAlertTransitionDelegate : NSObject <UIViewControllerTransitioningDelegate,
-    UIViewControllerAnimatedTransitioning>
+
+#if __IPHONE_OS_VERSION_MAX_ALLOWED < 70000
+
+@implementation UIViewController (UITransitioning)
+
+-(id< UIViewControllerTransitioningDelegate >)transitioningDelegate {
+    return nil;
+}
+-(void)setTransitioningDelegate:(id< UIViewControllerTransitioningDelegate >)delegate {
+}
+
+
+-(CGSize)preferredContentSize {
+    return CGSizeMake(0., 0.);
+}
+-(void)setPreferredContentSize:(CGSize)delegate {
+}
 
 @end
+
+#endif
+

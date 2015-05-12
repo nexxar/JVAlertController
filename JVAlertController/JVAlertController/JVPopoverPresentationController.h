@@ -1,5 +1,5 @@
 //
-//  JVAlertTransitionDelegate.h
+//  JVPopoverPresentationController.m
 //  JVAlertController
 //
 //  The MIT License (MIT)
@@ -23,10 +23,22 @@
 //  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 //  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+#import <objc/runtime.h>
 #import <UIKit/UIKit.h>
+#import "JVCompatibilityMRC.h"
 #import "JV-legacy-SDK.h"
 
-@interface JVAlertTransitionDelegate : NSObject <UIViewControllerTransitioningDelegate,
-    UIViewControllerAnimatedTransitioning>
-
+@interface JVPopoverPresentationController : NSObject <UIPopoverControllerDelegate>
+@property (nonatomic, strong) UIView *sourceView;
+@property (nonatomic) CGRect sourceRect;
+@property (nonatomic, strong) UIBarButtonItem *barButtonItem;
+@property (nonatomic, weak) id<UIPopoverPresentationControllerDelegate> delegate;
+@property(nonatomic, readwrite) UIEdgeInsets popoverLayoutMargins;
+@property(nonatomic, copy) UIColor *backgroundColor;
+@property(nonatomic, copy) NSArray *passthroughViews;
+@property(nonatomic, readwrite, strong) Class< UIPopoverBackgroundViewMethods > popoverBackgroundViewClass;
+@property(nonatomic, assign) UIPopoverArrowDirection permittedArrowDirections;
+@property(nonatomic, readonly) UIPopoverArrowDirection arrowDirection;
+@property(nonatomic, readwrite, weak) UIPopoverController *jv_legacyPopoverController;
 @end
+

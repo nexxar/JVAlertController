@@ -46,6 +46,7 @@ const CGFloat kJVActionSheetPopoverWidth = 304.0f;
 const CGFloat kJVActionSheetCornerRadius = 4.0f;
 const CGFloat kJVActionSheetCancelButtonCornerRadius = 4.0f;
 const CGFloat kJVActionSheetButtonHeight = 44.0f;
+const CGFloat kJVActionSheetButtonSpacing_legacyiOS = 10.0f;
 const CGFloat kJVActionSheetButtonHPadding = 12.0f;
 const CGFloat kJVActionSheetButtonVPaddingTop = 9.5f;
 const CGFloat kJVActionSheetButtonVPaddingBottom = 9.0f;
@@ -69,7 +70,12 @@ const CGFloat kJVAlertControllerTextFieldPadding = 4.0f;
 
 + (UIFont *)alertTitleFont
 {
-    return [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000
+    if ([UIFont respondsToSelector:@selector(preferredFontForTextStyle:)]) {
+        return [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
+    }
+#endif
+    return [UIFont systemFontOfSize:[UIFont labelFontSize]];
 }
 
 + (NSTextAlignment)alertTitleTextAlignment
@@ -84,7 +90,12 @@ const CGFloat kJVAlertControllerTextFieldPadding = 4.0f;
 
 + (UIFont *)alertMessageFont
 {
-    return [UIFont preferredFontForTextStyle:UIFontTextStyleFootnote];
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000
+    if ([UIFont respondsToSelector:@selector(preferredFontForTextStyle:)]) {
+        return [UIFont preferredFontForTextStyle:UIFontTextStyleFootnote];
+    }
+#endif
+    return [UIFont systemFontOfSize:[UIFont systemFontSize]];
 }
 
 + (NSTextAlignment)alertMessageTextAlignment
@@ -124,12 +135,22 @@ const CGFloat kJVAlertControllerTextFieldPadding = 4.0f;
 
 + (UIFont *)alertButtonFont
 {
-    return [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000
+    if ([UIFont respondsToSelector:@selector(preferredFontForTextStyle:)]) {
+        return [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
+    }
+#endif
+    return [UIFont systemFontOfSize:[UIFont buttonFontSize]];
 }
 
 + (UIFont *)alertLastButtonFont
 {
-    return [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000
+    if ([UIFont respondsToSelector:@selector(preferredFontForTextStyle:)]) {
+        return [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
+    }
+#endif
+    return [UIFont systemFontOfSize:[UIFont labelFontSize]];
 }
 
 + (UIColor *)alertTextFieldBorderColor
@@ -144,7 +165,12 @@ const CGFloat kJVAlertControllerTextFieldPadding = 4.0f;
 
 + (UIFont *)alertTextFieldFont
 {
-    return [UIFont preferredFontForTextStyle:UIFontTextStyleFootnote];
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000
+    if ([UIFont respondsToSelector:@selector(preferredFontForTextStyle:)]) {
+        return [UIFont preferredFontForTextStyle:UIFontTextStyleFootnote];
+    }
+#endif
+    return [UIFont systemFontOfSize:[UIFont smallSystemFontSize]];
 }
 
 + (UIColor *)alertObscureViewBackgroundColor
@@ -160,8 +186,13 @@ const CGFloat kJVAlertControllerTextFieldPadding = 4.0f;
 
 + (UIFont *)actionSheetTitleFont
 {
-    UIFontDescriptor *descriptor = [UIFontDescriptor preferredFontDescriptorWithTextStyle:UIFontTextStyleFootnote];
-    return [UIFont fontWithName:@"HelveticaNeue-Medium" size:descriptor.pointSize];
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000
+    if ([UIFont respondsToSelector:@selector(preferredFontForTextStyle:)]) {
+        UIFontDescriptor *descriptor = [UIFontDescriptor preferredFontDescriptorWithTextStyle:UIFontTextStyleFootnote];
+        return [UIFont fontWithName:@"HelveticaNeue-Medium" size:descriptor.pointSize];
+    }
+#endif
+    return [UIFont fontWithName:@"HelveticaNeue-Medium" size:[UIFont systemFontSize]];
 }
 
 + (NSTextAlignment)actionSheetTitleTextAlignment
@@ -176,7 +207,12 @@ const CGFloat kJVAlertControllerTextFieldPadding = 4.0f;
 
 + (UIFont *)actionSheetMessageFont
 {
-    return [UIFont preferredFontForTextStyle:UIFontTextStyleFootnote];
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000
+    if ([UIFont respondsToSelector:@selector(preferredFontForTextStyle:)]) {
+        return [UIFont preferredFontForTextStyle:UIFontTextStyleFootnote];
+    }
+#endif
+    return [UIFont systemFontOfSize:([UIFont systemFontSize] * 1.23529411764706f)];
 }
 
 + (NSTextAlignment)actionSheetMessageTextAlignment
@@ -196,7 +232,13 @@ const CGFloat kJVAlertControllerTextFieldPadding = 4.0f;
 
 + (UIColor *)actionSheetButtonDefaultTextColor
 {
-    return [UIColor colorWithRed:0.0f green:0.48f blue:1.0f alpha:1.0f]; 
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000
+    if ([UIFont respondsToSelector:@selector(preferredFontForTextStyle:)]) {
+        return [UIColor colorWithRed:0.0f green:0.48f blue:1.0f alpha:1.0f];
+    }
+#endif
+    // in iOS <= 6 black is the color for button labels
+    return [UIColor blackColor];
 }
 
 + (UIColor *)actionSheetButtonDisabledTextColor
@@ -216,16 +258,26 @@ const CGFloat kJVAlertControllerTextFieldPadding = 4.0f;
 
 + (UIFont *)actionSheetButtonFont
 {
-    UIFontDescriptor *descriptor = [UIFontDescriptor preferredFontDescriptorWithTextStyle:UIFontTextStyleBody];
-    CGFloat pointSize = descriptor.pointSize * 1.23529411764706f;
-    return [UIFont fontWithDescriptor:descriptor size:pointSize];
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000
+    if ([UIFont respondsToSelector:@selector(preferredFontForTextStyle:)]) {
+        UIFontDescriptor *descriptor = [UIFontDescriptor preferredFontDescriptorWithTextStyle:UIFontTextStyleBody];
+        CGFloat pointSize = descriptor.pointSize * 1.23529411764706f;
+        return [UIFont fontWithDescriptor:descriptor size:pointSize];
+    }
+#endif
+    return [UIFont boldSystemFontOfSize:[UIFont buttonFontSize]* 1.25f];
 }
 
 + (UIFont *)actionSheetCancelButtonFont
 {
-    UIFontDescriptor *descriptor = [UIFontDescriptor preferredFontDescriptorWithTextStyle:UIFontTextStyleHeadline];
-    CGFloat pointSize = descriptor.pointSize * 1.23529411764706f;
-    return [UIFont fontWithDescriptor:descriptor size:pointSize];
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 70000
+    if ([UIFont respondsToSelector:@selector(preferredFontForTextStyle:)]) {
+        UIFontDescriptor *descriptor = [UIFontDescriptor preferredFontDescriptorWithTextStyle:UIFontTextStyleHeadline];
+        CGFloat pointSize = descriptor.pointSize * 1.23529411764706f;
+        return [UIFont fontWithDescriptor:descriptor size:pointSize];
+    }
+#endif
+    return [UIFont boldSystemFontOfSize:[UIFont buttonFontSize]* 1.25f];
 }
 
 + (UIColor *)actionSheetCancelButtonHighlightedBackgroundColor

@@ -26,6 +26,7 @@
 #import <objc/runtime.h>
 #import <UIKit/UIKit.h>
 #import "UIViewController+JVAlertController.h"
+#import "JVAlertControllerStyles.h"
 
 #define JVAC_SYSTEM_VERSION_GTE(v) \
 ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending)
@@ -116,9 +117,23 @@ static void JVAC_PresentViewController(UIViewController *self,
             }
             
             UIPopoverPresentationController *ppc = [vc popoverPresentationController];
-            
-            self.JVAC_popoverController =
-            [[UIPopoverController alloc] initWithContentViewController:viewControllerToPresent];
+
+            UIPopoverController *newPopoverController = nil;
+            if (JVAC_SYSTEM_VERSION_GTE(@"7.0")) {
+                newPopoverController = [[UIPopoverController alloc] initWithContentViewController:viewControllerToPresent];
+
+            } else {
+                UINavigationController *topNavController = [[UINavigationController alloc] initWithRootViewController:viewControllerToPresent];
+
+                NSDictionary *fontAttributes = [[NSDictionary alloc]
+                                                initWithObjectsAndKeys:
+                                                    [UIFont boldSystemFontOfSize:[UIFont systemFontSize]*1.10f], UITextAttributeFont,
+                                                    [JVAlertControllerStyles actionSheetTitleColor], UITextAttributeTextColor,
+                                                nil];
+                [topNavController.navigationBar setTitleTextAttributes:fontAttributes];
+                newPopoverController = [[UIPopoverController alloc] initWithContentViewController:topNavController];
+            }
+            self.JVAC_popoverController = newPopoverController;
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wundeclared-selector"

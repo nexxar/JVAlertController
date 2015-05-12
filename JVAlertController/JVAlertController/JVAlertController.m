@@ -449,7 +449,7 @@
 
 - (UILabel *)actionSheetTitleView
 {
-    if (!_actionSheetTitleView) {
+    if (!_actionSheetTitleView && self.navigationController == nil) {
         _actionSheetTitleView = [UILabel new];
         _actionSheetTitleView.textColor = [JVAlertControllerStyles actionSheetTitleColor];
         _actionSheetTitleView.textAlignment = [JVAlertControllerStyles actionSheetTitleTextAlignment];
@@ -796,7 +796,11 @@ __asm(
     }
 
     if (title) {
-        self.actionSheetTitleView.text = title;
+        if (self.navigationController != nil) {
+            self.navigationController.title = title;
+        } else {
+            self.actionSheetTitleView.text = title;
+        }
     }
     
     if (message) {

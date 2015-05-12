@@ -107,6 +107,8 @@
 
 @implementation JVAlertController
 
+@dynamic title;
+
 @synthesize actions = _actions;
 
 + (instancetype)alertControllerWithTitle:(NSString *)title message:(NSString *)message

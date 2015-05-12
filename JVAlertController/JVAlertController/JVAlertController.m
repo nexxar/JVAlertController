@@ -33,6 +33,10 @@
 #import <objc/runtime.h>
 #import <UIKit/UIKit.h>
 
+#define JVAC_SYSTEM_VERSION_GTE(v) \
+([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending)
+
+
 // JVAlertController is not meant to be instantiated directly,
 // which is why there is no JVAlertController.h
 
@@ -784,7 +788,13 @@ __asm(
     
     NSString *title = self.title && self.message ? self.title : self.message;
     NSString *message = self.title && self.message ? self.message : self.title;
-    
+
+    // it's the other way round in older iOS < 7.
+    if (!JVAC_SYSTEM_VERSION_GTE(@"7.0")) {
+        title = self.title;
+        message = self.message;
+    }
+
     if (title) {
         self.actionSheetTitleView.text = title;
     }
@@ -895,6 +905,12 @@ __asm(
     NSString *title = self.title && self.message ? self.title : self.message;
     NSString *message = self.title && self.message ? self.message : self.title;
     
+    // it's the other way round in older iOS < 7.
+    if (!JVAC_SYSTEM_VERSION_GTE(@"7.0")) {
+        title = self.title;
+        message = self.message;
+    }
+
     CGFloat top = 0.0f;
     
     if (title) {

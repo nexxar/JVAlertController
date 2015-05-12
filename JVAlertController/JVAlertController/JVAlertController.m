@@ -1027,6 +1027,10 @@ __asm(
                viewHeight - actionSheetViewSpacer - actionSheetHeight,
                kJVActionSheetWidth,
                actionSheetHeight);
+
+    if (self.isInPopover && [self respondsToSelector:@selector(setContentSizeForViewInPopover:)]) {
+        self.contentSizeForViewInPopover = [self preferredContentSize];
+    }
 }
 
 @end

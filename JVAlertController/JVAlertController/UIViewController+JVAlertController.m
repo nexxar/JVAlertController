@@ -140,6 +140,7 @@ static void JVAC_PresentViewController(UIViewController *self,
                 JV_RELEASE_OBJECT(topNavController);
             }
             self.JVAC_popoverController = newPopoverController;
+            JV_RELEASE_OBJECT(newPopoverController);
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wundeclared-selector"

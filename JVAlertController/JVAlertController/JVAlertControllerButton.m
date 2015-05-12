@@ -38,6 +38,8 @@
     self = [super initWithFrame:frame];
     if (self) {
         if (!JVAC_SYSTEM_VERSION_GTE(@"7.0")) {
+            self.backgroundColor = [UIColor whiteColor];
+
             UITapGestureRecognizer *newTapRecogniser = [UITapGestureRecognizer new];
             [self addGestureRecognizer:newTapRecogniser];
             [newTapRecogniser addTarget:self action:@selector(performAction)];

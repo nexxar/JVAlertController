@@ -22,3 +22,13 @@ DerivedData
 
 *.orig
 *.idea
+
+# some more temporary files
+*~
+*.tmp
+*.bak
+*.new
+
+# Xcode4 files
+._*m
+._*h

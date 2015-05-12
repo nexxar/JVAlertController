@@ -84,6 +84,12 @@
     NSTimeInterval duration = [self transitionDuration:transitionContext];
     
     __weak typeof(self) weakSelf = self;
+    __weak id <UIViewControllerContextTransitioning> weakTransitionContext = transitionContext;
+
+    void (^completionOfAnimation)(BOOL finished) = ^(BOOL finished) {
+        [weakTransitionContext completeTransition:YES];
+    };
+
     
     if (self.isPresenting) {
         if (fromViewController.navigationController) {
@@ -106,20 +112,31 @@
         [[transitionContext containerView] addSubview:self.obscureView];
         [[transitionContext containerView] addSubview:toView];
         
-        [UIView animateWithDuration:duration
-                              delay:0.0f
-             usingSpringWithDamping:kJVAlertAnimationSpringDamping
-              initialSpringVelocity:0
-                            options:0
-                         animations:
-         ^{
-             toView.transform = startingTransform;
-             weakSelf.obscureView.alpha = kJVAlertObscureViewAlpha;
-         }
-                         completion:
-         ^(BOOL finished) {
-             [transitionContext completeTransition:YES];
-         }];
+        void (^animations)(void) = ^{
+            toView.transform = startingTransform;
+            weakSelf.obscureView.alpha = kJVAlertObscureViewAlpha;
+        };
+
+        if ([UIView respondsToSelector:@selector(animateWithDuration:delay:usingSpringWithDamping:initialSpringVelocity:options:animations:completion:
+                                                 )]) {
+
+            [UIView animateWithDuration:duration
+                                  delay:0.0f
+                 usingSpringWithDamping:kJVAlertAnimationSpringDamping
+                  initialSpringVelocity:0
+                                options:0
+                             animations:animations
+                             completion:completionOfAnimation
+             ];
+        } else {
+            [UIView animateWithDuration:duration
+                                  delay:0.0f
+                                options:0
+                             animations:animations
+                             completion:completionOfAnimation
+             ];
+        }
+
     }
     else {
         if (toViewController.navigationController) {
@@ -130,24 +147,34 @@
         [[transitionContext containerView] addSubview:toView];
         [[transitionContext containerView] addSubview:self.obscureView];
         [[transitionContext containerView] addSubview:fromView];
+
+        void (^animations)(void) = ^{
+            fromView.transform = CGAffineTransformScale(fromView.transform,
+                                                        kJVAlertAnimationEndingScale,
+                                                        kJVAlertAnimationEndingScale);
+            fromView.alpha = 0.0f;
+            weakSelf.obscureView.alpha = 0.0f;
+        };
         
-        [UIView animateWithDuration:duration
-                              delay:0.0f
-             usingSpringWithDamping:kJVAlertAnimationSpringDamping
-              initialSpringVelocity:0
-                            options:0
-                         animations:
-         ^{
-             fromView.transform = CGAffineTransformScale(fromView.transform,
-                                                         kJVAlertAnimationEndingScale,
-                                                         kJVAlertAnimationEndingScale);
-             fromView.alpha = 0.0f;
-             weakSelf.obscureView.alpha = 0.0f;
-         }
-                         completion:
-         ^(BOOL finished) {
-             [transitionContext completeTransition:YES];
-         }];
+        if ([UIView respondsToSelector:@selector(animateWithDuration:delay:usingSpringWithDamping:initialSpringVelocity:options:animations:completion:
+                                                 )]) {
+
+            [UIView animateWithDuration:duration
+                                  delay:0.0f
+                 usingSpringWithDamping:kJVAlertAnimationSpringDamping
+                  initialSpringVelocity:0
+                                options:0
+                             animations:animations
+                             completion:completionOfAnimation
+             ];
+        } else {
+            [UIView animateWithDuration:duration
+                                  delay:0.0f
+                                options:0
+                             animations:animations
+                             completion:completionOfAnimation
+             ];
+        }
     }
 }
 

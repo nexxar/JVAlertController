@@ -961,9 +961,10 @@ __asm(
     CGFloat buttonHeight = kJVActionSheetButtonHeight - JVAC_PIXEL;
     
     NSInteger i=0;
-    
+
+    const CGFloat buttonSpacing = JVAC_SYSTEM_VERSION_GTE(@"7.0") ? 0.0f : kJVActionSheetButtonSpacing_legacyiOS;
     for (UIView *buttonSeparator in self.buttonSeparators) {
-        buttonSeparator.frame = CGRectMake(0.0f, i*kJVActionSheetButtonHeight, kJVActionSheetWidth, JVAC_PIXEL);
+        buttonSeparator.frame = CGRectMake(0.0f, i*(kJVActionSheetButtonHeight+buttonSpacing), kJVActionSheetWidth, JVAC_PIXEL);
         i++;
     }
     
@@ -978,7 +979,7 @@ __asm(
             if (UIAlertActionStyleCancel != action.style) {
                 // cancel button added last
                 button = [self.buttons objectAtIndex:i];
-                button.frame = CGRectMake(0.0f, j*kJVActionSheetButtonHeight, buttonWidth, buttonHeight);
+                button.frame = CGRectMake(0.0f, j*(kJVActionSheetButtonHeight+buttonSpacing), buttonWidth, buttonHeight);
                 j++;
             }
             i++;

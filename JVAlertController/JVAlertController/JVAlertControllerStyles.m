@@ -46,6 +46,7 @@ const CGFloat kJVActionSheetPopoverWidth = 304.0f;
 const CGFloat kJVActionSheetCornerRadius = 4.0f;
 const CGFloat kJVActionSheetCancelButtonCornerRadius = 4.0f;
 const CGFloat kJVActionSheetButtonHeight = 44.0f;
+const CGFloat kJVActionSheetButtonSpacing_legacyiOS = 10.0f;
 const CGFloat kJVActionSheetButtonHPadding = 12.0f;
 const CGFloat kJVActionSheetButtonVPaddingTop = 9.5f;
 const CGFloat kJVActionSheetButtonVPaddingBottom = 9.0f;

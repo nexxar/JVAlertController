@@ -53,11 +53,17 @@
 }
 
 - (UIColor*)backgroundColor {
-    return self.jv_legacyPopoverController.backgroundColor;
+    if ([self.jv_legacyPopoverController respondsToSelector:@selector(backgroundColor)]) {
+        return [self.jv_legacyPopoverController backgroundColor];
+    } else {
+        return nil;
+    }
 }
 
 - (void)setBackgroundColor:(UIColor*)newColor {
-    self.jv_legacyPopoverController.backgroundColor = newColor;
+    if ([self.jv_legacyPopoverController respondsToSelector:@selector(setBackgroundColor:)]) {
+        return [self.jv_legacyPopoverController setBackgroundColor:newColor];
+    }
 }
 
 - (NSArray*)passthroughViews {

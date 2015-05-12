@@ -89,8 +89,7 @@
     NSTimeInterval duration = [self transitionDuration:transitionContext];
     
     JV_WEAK_REFERENCE_FOR_BLOCK typeof(self) weakSelf = self;
-    __weak typeof(self) weakSelf = self;
-    __weak id <UIViewControllerContextTransitioning> weakTransitionContext = transitionContext;
+    JV_WEAK_REFERENCE_FOR_BLOCK id <UIViewControllerContextTransitioning> weakTransitionContext = transitionContext;
 
     void (^completionOfAnimation)(BOOL finished) = ^(BOOL finished) {
         [weakTransitionContext completeTransition:YES];

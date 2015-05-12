@@ -266,8 +266,20 @@
     _preferredStyle = preferredStyle;
     
     if (UIAlertControllerStyleAlert == self.preferredStyle) {
+        JVAlertTransitionDelegate *newDelegate = [JVAlertTransitionDelegate new];
+        self.alertTransitionDelegate = newDelegate;
+        JV_RELEASE_OBJECT(newDelegate);
+        if ([self respondsToSelector:@selector(transitioningDelegate)]) {
+            self.transitioningDelegate = self.alertTransitionDelegate;
+        }
     }
     else {
+        JVActionSheetTransitionDelegate *newDelegate = [JVActionSheetTransitionDelegate new];
+        self.actionSheetTransitionDelegate = newDelegate;
+        JV_RELEASE_OBJECT(newDelegate);
+        if ([self respondsToSelector:@selector(transitioningDelegate)]) {
+            self.transitioningDelegate = self.alertTransitionDelegate;
+        }
     }
 }
 

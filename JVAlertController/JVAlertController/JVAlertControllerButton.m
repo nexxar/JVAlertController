@@ -44,6 +44,8 @@
             UITapGestureRecognizer *newTapRecogniser = [UITapGestureRecognizer new];
             [self addGestureRecognizer:newTapRecogniser];
             [newTapRecogniser addTarget:self action:@selector(performAction)];
+            JV_RELEASE_OBJECT(newTapRecogniser);
+
         }
         [self addObserver:self forKeyPath:@"highlighted" options:NSKeyValueObservingOptionNew context:NULL];
         _originalBackgroundColor = self.backgroundColor;

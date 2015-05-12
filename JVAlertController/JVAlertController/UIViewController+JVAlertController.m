@@ -134,7 +134,10 @@ static void JVAC_PresentViewController(UIViewController *self,
                                                     [JVAlertControllerStyles actionSheetTitleColor], UITextAttributeTextColor,
                                                 nil];
                 [topNavController.navigationBar setTitleTextAttributes:fontAttributes];
+                JV_RELEASE_OBJECT(fontAttributes);
+
                 newPopoverController = [[UIPopoverController alloc] initWithContentViewController:topNavController];
+                JV_RELEASE_OBJECT(topNavController);
             }
             self.JVAC_popoverController = newPopoverController;
 

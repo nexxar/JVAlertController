@@ -25,6 +25,7 @@
 
 #import "JVAlertControllerStyles.h"
 #import "JVAlertControllerTextField.h"
+#import "JV-legacy-SDK.h"
 
 @interface JVAlertControllerTextField ()
 @property (nonatomic, strong) UITextField * textField;

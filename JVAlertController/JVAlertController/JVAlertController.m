@@ -32,6 +32,8 @@
 #import "JVActionSheetTransitionDelegate.h"
 #import <objc/runtime.h>
 #import <UIKit/UIKit.h>
+#import "UIViewController+JVAlertController.h"
+#import "JV-legacy-SDK.h"
 
 #define JVAC_SYSTEM_VERSION_GTE(v) \
 ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending)
@@ -44,6 +46,8 @@
 // to be injected via the objc runtime as "UIAlertController"
 // Once this class and its accompanying files are imported into your project,
 // you can use the standard UIAlertController APIs freely on iOS 7
+
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
 
 @interface JVAlertController : UIViewController
 
@@ -63,6 +67,7 @@
 - (void)addTextFieldWithConfigurationHandler:(void (^)(UITextField *textField))configurationHandler;
 
 @end
+#endif
 
 @interface JVAlertController ()
 @property (nonatomic, strong) NSArray *actions;

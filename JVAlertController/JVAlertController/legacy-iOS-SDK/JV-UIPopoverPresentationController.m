@@ -1,10 +1,8 @@
 //
-//  JVPopoverPresentationController.m
+//  JVAlertController.m
 //  JVAlertController
 //
 //  The MIT License (MIT)
-//
-//  Copyright (c) 2015 Jared Verdi
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy of
 //  this software and associated documentation files (the "Software"), to deal in
@@ -23,13 +21,17 @@
 //  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 //  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-#import <objc/runtime.h>
+#if __IPHONE_OS_VERSION_MAX_ALLOWED < 80000
+
 #import <UIKit/UIKit.h>
-#import "JV-legacy-SDK.h"
-#import "JVPopoverPresentationController.h"
 
-@implementation JVPopoverPresentationController
+@interface UIPopoverPresentationController : NSObject
+@end
+@implementation UIPopoverPresentationController
+@end
+/*
 
+@implementation UIPopoverPresentationController
 @dynamic popoverLayoutMargins, backgroundColor, passthroughViews, popoverBackgroundViewClass, arrowDirection;
 
 - (UIEdgeInsets)popoverLayoutMargins {
@@ -104,71 +106,19 @@ willRepositionPopoverToRect:(inout CGRect *)rect
     }
 }
 
-
-
-// copy the JVPopoverPresentationController implementation into UIPopoverPresentationController's place on iOS 7
-// adapted from Cédric Luthi's NSUUID project: https://github.com/0xced/NSUUID
-+ (void)load
-{
-    if (objc_getClass("UIPopoverPresentationController"))
-    {
-        return;
-    }
-    
-    Class *UIPopoverPresentationControllerClassRef = NULL;
-#if TARGET_CPU_ARM
-    __asm(
-          "movw %0, :lower16:(L_OBJC_CLASS_UIPopoverPresentationController-(LPC2+4))\n"
-          "movt %0, :upper16:(L_OBJC_CLASS_UIPopoverPresentationController-(LPC2+4))\n"
-          "LPC2: add %0, pc" : "=r"(UIPopoverPresentationControllerClassRef)
-          );
-#elif TARGET_CPU_ARM64
-    __asm(
-          "adrp %0, L_OBJC_CLASS_UIPopoverPresentationController@PAGE\n"
-          "add  %0, %0, L_OBJC_CLASS_UIPopoverPresentationController@PAGEOFF" : "=r"(UIPopoverPresentationControllerClassRef)
-          );
-#elif TARGET_CPU_X86_64
-    __asm("leaq L_OBJC_CLASS_UIPopoverPresentationController(%%rip), %0" : "=r"(UIPopoverPresentationControllerClassRef));
-#elif TARGET_CPU_X86
-    void *pc = NULL;
-    __asm(
-          "calll L2\n"
-          "L2: popl %0\n"
-          "leal L_OBJC_CLASS_UIPopoverPresentationController-L2(%0), %1" : "=r"(pc), "=r"(UIPopoverPresentationControllerClassRef)
-          );
+@end
+*/
 #endif
-    if (UIPopoverPresentationControllerClassRef && *UIPopoverPresentationControllerClassRef == Nil)
-    {
-        Class UIPopoverPresentationControllerClass = objc_allocateClassPair(self, "UIPopoverPresentationController", 0);
-        if (UIPopoverPresentationControllerClass) {
-            objc_registerClassPair(UIPopoverPresentationControllerClass);
-            *UIPopoverPresentationControllerClassRef = UIPopoverPresentationControllerClass;
-        }
-    }
+
+#if __IPHONE_OS_VERSION_MAX_ALLOWED < 70000
+
+@implementation UIPopoverController (JVPopoverController)
+//@property (nonatomic, copy) UIColor *backgroundColor;
+-(UIColor*)backgroundColor {
+    return [UIColor grayColor];
+}
+-(void)setBackgroundColor:(UIColor *)newColor {
 }
 
 @end
-
-__asm(
-#if defined(__OBJC2__) && __OBJC2__
-      ".section        __DATA,__objc_classrefs,regular,no_dead_strip\n"
-    #if	TARGET_RT_64_BIT
-      ".align          3\n"
-      "L_OBJC_CLASS_UIPopoverPresentationController:\n"
-      ".quad           _OBJC_CLASS_$_UIPopoverPresentationController\n"
-    #else
-      ".align          2\n"
-      "L_OBJC_CLASS_UIPopoverPresentationController:\n"
-      ".long           _OBJC_CLASS_$_UIPopoverPresentationController\n"
-    #endif
-#else
-      ".section        __TEXT,__cstring,cstring_literals\n"
-      "L_OBJC_CLASS_NAME_UIPopoverPresentationController:\n"
-      ".asciz          \"UIPopoverPresentationController\"\n"
-      ".section        __OBJC,__cls_refs,literal_pointers,no_dead_strip\n"
-      ".align          2\n"
-      "L_OBJC_CLASS_UIPopoverPresentationController:\n"
-      ".long           L_OBJC_CLASS_NAME_UIPopoverPresentationController\n"
 #endif
-      ".weak_reference _OBJC_CLASS_$_UIPopoverPresentationController\n"
-      );

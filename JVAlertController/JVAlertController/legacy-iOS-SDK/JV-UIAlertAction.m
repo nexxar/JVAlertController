@@ -1,10 +1,8 @@
 //
-//  JVAlertTransitionDelegate.h
+//  JVAlertController.m
 //  JVAlertController
 //
 //  The MIT License (MIT)
-//
-//  Copyright (c) 2015 Jared Verdi
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy of
 //  this software and associated documentation files (the "Software"), to deal in
@@ -23,10 +21,18 @@
 //  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 //  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-#import <UIKit/UIKit.h>
+
+#if __IPHONE_OS_VERSION_MAX_ALLOWED < 80000
+
 #import "JV-legacy-SDK.h"
+#import "JVAlertAction.h"
 
-@interface JVAlertTransitionDelegate : NSObject <UIViewControllerTransitioningDelegate,
-    UIViewControllerAnimatedTransitioning>
+#undef UIAlertAction
 
+@interface UIAlertAction : JVAlertAction
 @end
+
+@implementation UIAlertAction
+@end
+
+#endif

@@ -25,6 +25,8 @@
 
 #import "JVAlertControllerStyles.h"
 #import "JVAlertTransitionDelegate.h"
+#import "JV-UIAlertController.h"
+#import "JV-UIViewController.h"
 
 @interface JVAlertTransitionDelegate ()
 @property (nonatomic, assign, getter=isPresenting) BOOL presenting;

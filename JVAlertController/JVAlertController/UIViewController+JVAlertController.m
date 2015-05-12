@@ -26,6 +26,8 @@
 #import <objc/runtime.h>
 #import <UIKit/UIKit.h>
 #import "UIViewController+JVAlertController.h"
+#import "JV-legacy-SDK.h"
+#import "JVPopoverPresentationController.h"
 #import "JVAlertControllerStyles.h"
 
 #define JVAC_SYSTEM_VERSION_GTE(v) \

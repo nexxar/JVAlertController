@@ -24,6 +24,7 @@
 //  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #import <UIKit/UIKit.h>
+#import "JV-legacy-SDK.h"
 
 @interface JVAlertAction : NSObject <NSCopying>
 

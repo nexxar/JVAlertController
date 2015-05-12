@@ -414,7 +414,8 @@
 {
     if (!_actionSheetView) {
         _actionSheetView = [UIView new];
-        _actionSheetView.autoresizingMask = (UIViewAutoresizingFlexibleLeftMargin
+        _actionSheetView.autoresizingMask = (UIViewAutoresizingFlexibleHeight
+                                             | UIViewAutoresizingFlexibleLeftMargin
                                              | UIViewAutoresizingFlexibleRightMargin
                                              | UIViewAutoresizingFlexibleTopMargin);
         _actionSheetView.backgroundColor = [UIColor clearColor];

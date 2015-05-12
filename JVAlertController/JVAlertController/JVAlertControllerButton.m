@@ -25,6 +25,9 @@
 
 #import "JVAlertControllerButton.h"
 
+#define JVAC_SYSTEM_VERSION_GTE(v) \
+([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending)
+
 @implementation JVAlertControllerButton
 {
     UIColor *_originalBackgroundColor;
@@ -34,6 +37,11 @@
 {
     self = [super initWithFrame:frame];
     if (self) {
+        if (!JVAC_SYSTEM_VERSION_GTE(@"7.0")) {
+            UITapGestureRecognizer *newTapRecogniser = [UITapGestureRecognizer new];
+            [self addGestureRecognizer:newTapRecogniser];
+            [newTapRecogniser addTarget:self action:@selector(performAction)];
+        }
         [self addObserver:self forKeyPath:@"highlighted" options:NSKeyValueObservingOptionNew context:NULL];
         _originalBackgroundColor = self.backgroundColor;
     }
@@ -43,6 +51,10 @@
 - (void)dealloc
 {
     [self removeObserver:self forKeyPath:@"highlighted"];
+}
+
+- (void)performAction {
+    [self sendActionsForControlEvents:UIControlEventTouchUpInside];
 }
 
 - (void)setBackgroundColor:(UIColor *)backgroundColor

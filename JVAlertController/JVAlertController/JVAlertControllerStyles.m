@@ -69,7 +69,10 @@ const CGFloat kJVAlertControllerTextFieldPadding = 4.0f;
 
 + (UIFont *)alertTitleFont
 {
-    return [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
+    if ([UIFont respondsToSelector:@selector(preferredFontForTextStyle:)]) {
+        return [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
+    }
+    return [UIFont systemFontOfSize:[UIFont labelFontSize]];
 }
 
 + (NSTextAlignment)alertTitleTextAlignment
@@ -84,7 +87,10 @@ const CGFloat kJVAlertControllerTextFieldPadding = 4.0f;
 
 + (UIFont *)alertMessageFont
 {
-    return [UIFont preferredFontForTextStyle:UIFontTextStyleFootnote];
+    if ([UIFont respondsToSelector:@selector(preferredFontForTextStyle:)]) {
+        return [UIFont preferredFontForTextStyle:UIFontTextStyleFootnote];
+    }
+    return [UIFont systemFontOfSize:[UIFont systemFontSize]];
 }
 
 + (NSTextAlignment)alertMessageTextAlignment
@@ -124,12 +130,18 @@ const CGFloat kJVAlertControllerTextFieldPadding = 4.0f;
 
 + (UIFont *)alertButtonFont
 {
-    return [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
+    if ([UIFont respondsToSelector:@selector(preferredFontForTextStyle:)]) {
+        return [UIFont preferredFontForTextStyle:UIFontTextStyleBody];
+    }
+    return [UIFont systemFontOfSize:[UIFont buttonFontSize]];
 }
 
 + (UIFont *)alertLastButtonFont
 {
-    return [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
+    if ([UIFont respondsToSelector:@selector(preferredFontForTextStyle:)]) {
+        return [UIFont preferredFontForTextStyle:UIFontTextStyleHeadline];
+    }
+    return [UIFont systemFontOfSize:[UIFont labelFontSize]];
 }
 
 + (UIColor *)alertTextFieldBorderColor
@@ -144,7 +156,10 @@ const CGFloat kJVAlertControllerTextFieldPadding = 4.0f;
 
 + (UIFont *)alertTextFieldFont
 {
-    return [UIFont preferredFontForTextStyle:UIFontTextStyleFootnote];
+    if ([UIFont respondsToSelector:@selector(preferredFontForTextStyle:)]) {
+        return [UIFont preferredFontForTextStyle:UIFontTextStyleFootnote];
+    }
+    return [UIFont systemFontOfSize:[UIFont smallSystemFontSize]];
 }
 
 + (UIColor *)alertObscureViewBackgroundColor
@@ -160,8 +175,11 @@ const CGFloat kJVAlertControllerTextFieldPadding = 4.0f;
 
 + (UIFont *)actionSheetTitleFont
 {
-    UIFontDescriptor *descriptor = [UIFontDescriptor preferredFontDescriptorWithTextStyle:UIFontTextStyleFootnote];
-    return [UIFont fontWithName:@"HelveticaNeue-Medium" size:descriptor.pointSize];
+    if ([UIFont respondsToSelector:@selector(preferredFontForTextStyle:)]) {
+        UIFontDescriptor *descriptor = [UIFontDescriptor preferredFontDescriptorWithTextStyle:UIFontTextStyleFootnote];
+        return [UIFont fontWithName:@"HelveticaNeue-Medium" size:descriptor.pointSize];
+    }
+    return [UIFont fontWithName:@"HelveticaNeue-Medium" size:[UIFont systemFontSize]];
 }
 
 + (NSTextAlignment)actionSheetTitleTextAlignment
@@ -176,7 +194,10 @@ const CGFloat kJVAlertControllerTextFieldPadding = 4.0f;
 
 + (UIFont *)actionSheetMessageFont
 {
-    return [UIFont preferredFontForTextStyle:UIFontTextStyleFootnote];
+    if ([UIFont respondsToSelector:@selector(preferredFontForTextStyle:)]) {
+        return [UIFont preferredFontForTextStyle:UIFontTextStyleFootnote];
+    }
+    return [UIFont systemFontOfSize:([UIFont systemFontSize] * 1.23529411764706f)];
 }
 
 + (NSTextAlignment)actionSheetMessageTextAlignment
@@ -196,7 +217,11 @@ const CGFloat kJVAlertControllerTextFieldPadding = 4.0f;
 
 + (UIColor *)actionSheetButtonDefaultTextColor
 {
-    return [UIColor colorWithRed:0.0f green:0.48f blue:1.0f alpha:1.0f]; 
+    if ([UIFont respondsToSelector:@selector(preferredFontForTextStyle:)]) {
+        return [UIColor colorWithRed:0.0f green:0.48f blue:1.0f alpha:1.0f];
+    }
+    // in iOS <= 6 black is the color for button labels
+    return [UIColor blackColor];
 }
 
 + (UIColor *)actionSheetButtonDisabledTextColor
@@ -216,16 +241,22 @@ const CGFloat kJVAlertControllerTextFieldPadding = 4.0f;
 
 + (UIFont *)actionSheetButtonFont
 {
-    UIFontDescriptor *descriptor = [UIFontDescriptor preferredFontDescriptorWithTextStyle:UIFontTextStyleBody];
-    CGFloat pointSize = descriptor.pointSize * 1.23529411764706f;
-    return [UIFont fontWithDescriptor:descriptor size:pointSize];
+    if ([UIFont respondsToSelector:@selector(preferredFontForTextStyle:)]) {
+        UIFontDescriptor *descriptor = [UIFontDescriptor preferredFontDescriptorWithTextStyle:UIFontTextStyleBody];
+        CGFloat pointSize = descriptor.pointSize * 1.23529411764706f;
+        return [UIFont fontWithDescriptor:descriptor size:pointSize];
+    }
+    return [UIFont boldSystemFontOfSize:[UIFont buttonFontSize]* 1.25f];
 }
 
 + (UIFont *)actionSheetCancelButtonFont
 {
-    UIFontDescriptor *descriptor = [UIFontDescriptor preferredFontDescriptorWithTextStyle:UIFontTextStyleHeadline];
-    CGFloat pointSize = descriptor.pointSize * 1.23529411764706f;
-    return [UIFont fontWithDescriptor:descriptor size:pointSize];
+    if ([UIFont respondsToSelector:@selector(preferredFontForTextStyle:)]) {
+        UIFontDescriptor *descriptor = [UIFontDescriptor preferredFontDescriptorWithTextStyle:UIFontTextStyleHeadline];
+        CGFloat pointSize = descriptor.pointSize * 1.23529411764706f;
+        return [UIFont fontWithDescriptor:descriptor size:pointSize];
+    }
+    return [UIFont boldSystemFontOfSize:[UIFont buttonFontSize]* 1.25f];
 }
 
 + (UIColor *)actionSheetCancelButtonHighlightedBackgroundColor

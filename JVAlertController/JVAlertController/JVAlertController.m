@@ -193,7 +193,7 @@
 
 - (CGSize)preferredContentSize
 {
-    if (![self isPad]) {
+    if (![self isPad] && [super respondsToSelector:@selector(preferredContentSize)]) {
         return [super preferredContentSize];
     }
     
@@ -238,12 +238,16 @@
     _preferredStyle = preferredStyle;
     
     if (UIAlertControllerStyleAlert == self.preferredStyle) {
-        self.alertTransitionDelegate = [JVAlertTransitionDelegate new];
-        self.transitioningDelegate = self.alertTransitionDelegate;
+        if ([self respondsToSelector:@selector(transitioningDelegate)]) {
+            self.alertTransitionDelegate = [JVAlertTransitionDelegate new];
+            self.transitioningDelegate = self.alertTransitionDelegate;
+        }
     }
     else {
-        self.actionSheetTransitionDelegate = [JVActionSheetTransitionDelegate new];
-        self.transitioningDelegate = self.actionSheetTransitionDelegate;
+        if ([self respondsToSelector:@selector(transitioningDelegate)]) {
+            self.actionSheetTransitionDelegate = [JVActionSheetTransitionDelegate new];
+            self.transitioningDelegate = self.actionSheetTransitionDelegate;
+        }
     }
 }
 
@@ -599,7 +603,9 @@ __asm(
             button.enabled = action.isEnabled;
             button.highlightedBackgroundColor = [JVAlertControllerStyles alertButtonHighlightedBackgroundColor];
             button.titleLabel.adjustsFontSizeToFitWidth = YES;
-            button.titleLabel.minimumScaleFactor = kJVAlertButtonMinimumScaleFactor;
+            if ([button.titleLabel respondsToSelector:@selector(setMinimumScaleFactor:)]) {
+                button.titleLabel.minimumScaleFactor = kJVAlertButtonMinimumScaleFactor;
+            }
             [button setTitle:action.title forState:UIControlStateNormal];
             [button setContentEdgeInsets:UIEdgeInsetsMake(kJVAlertButtonVPaddingTop,
                                                           kJVAlertButtonHPadding,
@@ -811,7 +817,9 @@ __asm(
             button.enabled = action.isEnabled;
             button.highlightedBackgroundColor = [JVAlertControllerStyles actionSheetButtonHighlightedBackgroundColor];
             button.titleLabel.adjustsFontSizeToFitWidth = YES;
-            button.titleLabel.minimumScaleFactor = kJVActionSheetButtonMinimumScaleFactor;
+            if ([button.titleLabel respondsToSelector:@selector(setMinimumScaleFactor:)]) {
+                button.titleLabel.minimumScaleFactor = kJVActionSheetButtonMinimumScaleFactor;
+            }
             [button setTitle:action.title forState:UIControlStateNormal];
             [button setContentHorizontalAlignment:UIControlContentHorizontalAlignmentCenter];
             [button setContentEdgeInsets:UIEdgeInsetsMake(1.0f, 0.0f, 0.0f, 0.0f)];

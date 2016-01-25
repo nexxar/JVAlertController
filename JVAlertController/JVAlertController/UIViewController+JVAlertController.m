@@ -29,6 +29,7 @@
 #import "JVCompatibilityMRC.h"
 #import "JV-legacy-SDK.h"
 #import "JVPopoverPresentationController.h"
+#import "JVAlertControllerStyles.h"
 
 
 void (*JVAC_OrigPresentViewController)(id, SEL, UIViewController *, BOOL, void (^)(void));
@@ -118,8 +119,24 @@ static void JVAC_PresentViewController(UIViewController *self,
             
             UIPopoverPresentationController *ppc = [vc popoverPresentationController];
 
-            UIPopoverController *newPopoverController =
-            [[UIPopoverController alloc] initWithContentViewController:viewControllerToPresent];
+            UIPopoverController *newPopoverController = nil;
+            if (JVAC_SYSTEM_VERSION_GTE(@"7.0")) {
+                newPopoverController = [[UIPopoverController alloc] initWithContentViewController:viewControllerToPresent];
+
+            } else {
+                UINavigationController *topNavController = [[UINavigationController alloc] initWithRootViewController:viewControllerToPresent];
+
+                NSDictionary *fontAttributes = [[NSDictionary alloc]
+                                                initWithObjectsAndKeys:
+                                                    [UIFont boldSystemFontOfSize:[UIFont systemFontSize]*1.10f], UITextAttributeFont,
+                                                    [JVAlertControllerStyles actionSheetTitleColor], UITextAttributeTextColor,
+                                                nil];
+                [topNavController.navigationBar setTitleTextAttributes:fontAttributes];
+                JV_RELEASE_OBJECT(fontAttributes);
+
+                newPopoverController = [[UIPopoverController alloc] initWithContentViewController:topNavController];
+                JV_RELEASE_OBJECT(topNavController);
+            }
             self.JVAC_popoverController = newPopoverController;
             JV_RELEASE_OBJECT(newPopoverController);
 

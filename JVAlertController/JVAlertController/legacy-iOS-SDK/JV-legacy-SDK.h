@@ -25,6 +25,10 @@
 #import <QuartzCore/CALayer.h>
 #endif
 
+#define JVAC_SYSTEM_VERSION_GTE(v) \
+    ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending)
+
+
 #if __IPHONE_OS_VERSION_MAX_ALLOWED < 80000
 
 #import "JV-UIAlertAction.h"

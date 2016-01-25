@@ -821,7 +821,13 @@ __asm(
     
     NSString *title = self.title && self.message ? self.title : self.message;
     NSString *message = self.title && self.message ? self.message : self.title;
-    
+
+    // it's the other way round in older iOS < 7.
+    if (!JVAC_SYSTEM_VERSION_GTE(@"7.0")) {
+        title = self.title;
+        message = self.message;
+    }
+
     if (title) {
         self.actionSheetTitleView.text = title;
     }
@@ -855,14 +861,20 @@ __asm(
             button.enabled = action.isEnabled;
             button.highlightedBackgroundColor = [JVAlertControllerStyles actionSheetButtonHighlightedBackgroundColor];
             button.titleLabel.adjustsFontSizeToFitWidth = YES;
-            button.titleLabel.minimumScaleFactor = kJVActionSheetButtonMinimumScaleFactor;
+            if ([button.titleLabel respondsToSelector:@selector(setMinimumScaleFactor:)]) {
+                button.titleLabel.minimumScaleFactor = kJVActionSheetButtonMinimumScaleFactor;
+            }
             [button setTitle:action.title forState:UIControlStateNormal];
             [button setContentHorizontalAlignment:UIControlContentHorizontalAlignmentCenter];
-            [button setContentEdgeInsets:UIEdgeInsetsMake(1.0f, 0.0f, 0.0f, 0.0f)];
-            [button setContentEdgeInsets:UIEdgeInsetsMake(kJVActionSheetButtonVPaddingTop,
-                                                          kJVActionSheetButtonHPadding,
-                                                          kJVActionSheetButtonVPaddingBottom,
-                                                          kJVActionSheetButtonHPadding)];
+            if (!JVAC_SYSTEM_VERSION_GTE(@"7.0")) {
+                button.layer.cornerRadius = kJVActionSheetCancelButtonCornerRadius;
+
+            } else {
+                [button setContentEdgeInsets:UIEdgeInsetsMake(kJVActionSheetButtonVPaddingTop,
+                                                              kJVActionSheetButtonHPadding,
+                                                              kJVActionSheetButtonVPaddingBottom,
+                                                              kJVActionSheetButtonHPadding)];
+            }
             [button addTarget:self action:@selector(performAction:) forControlEvents:UIControlEventTouchUpInside];
             
             [buttons addObject:button];
@@ -941,6 +953,12 @@ __asm(
     NSString *title = self.title && self.message ? self.title : self.message;
     NSString *message = self.title && self.message ? self.message : self.title;
     
+    // it's the other way round in older iOS < 7.
+    if (!JVAC_SYSTEM_VERSION_GTE(@"7.0")) {
+        title = self.title;
+        message = self.message;
+    }
+
     CGFloat top = 0.0f;
     
     if (title) {
@@ -982,9 +1000,10 @@ __asm(
     CGFloat buttonHeight = kJVActionSheetButtonHeight - JVAC_PIXEL;
     
     NSInteger i=0;
-    
+
+    const CGFloat buttonSpacing = JVAC_SYSTEM_VERSION_GTE(@"7.0") ? 0.0f : kJVActionSheetButtonSpacing_legacyiOS;
     for (UIView *buttonSeparator in self.buttonSeparators) {
-        buttonSeparator.frame = CGRectMake(0.0f, i*kJVActionSheetButtonHeight, kJVActionSheetWidth, JVAC_PIXEL);
+        buttonSeparator.frame = CGRectMake(0.0f, i*(kJVActionSheetButtonHeight+buttonSpacing), kJVActionSheetWidth, JVAC_PIXEL);
         i++;
     }
     
@@ -999,7 +1018,7 @@ __asm(
             if (UIAlertActionStyleCancel != action.style) {
                 // cancel button added last
                 button = [self.buttons objectAtIndex:i];
-                button.frame = CGRectMake(0.0f, j*kJVActionSheetButtonHeight, buttonWidth, buttonHeight);
+                button.frame = CGRectMake(0.0f, j*(kJVActionSheetButtonHeight+buttonSpacing), buttonWidth, buttonHeight);
                 j++;
             }
             i++;

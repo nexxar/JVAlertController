@@ -35,6 +35,15 @@
 {
     self = [super initWithFrame:frame];
     if (self) {
+        if (!JVAC_SYSTEM_VERSION_GTE(@"7.0")) {
+            self.backgroundColor = [UIColor whiteColor];
+
+            UITapGestureRecognizer *newTapRecogniser = [UITapGestureRecognizer new];
+            [self addGestureRecognizer:newTapRecogniser];
+            [newTapRecogniser addTarget:self action:@selector(performAction)];
+            JV_RELEASE_OBJECT(newTapRecogniser);
+
+        }
         [self addObserver:self forKeyPath:@"highlighted" options:NSKeyValueObservingOptionNew context:NULL];
         _originalBackgroundColor = self.backgroundColor;
         JV_RETAIN_OBJECT(_originalBackgroundColor);
@@ -47,6 +56,10 @@
     [self removeObserver:self forKeyPath:@"highlighted"];
     JV_RELEASE_OBJECT(_originalBackgroundColor);
     JV_SUPER_DEALLOC;
+}
+
+- (void)performAction {
+    [self sendActionsForControlEvents:UIControlEventTouchUpInside];
 }
 
 - (void)setBackgroundColor:(UIColor *)backgroundColor

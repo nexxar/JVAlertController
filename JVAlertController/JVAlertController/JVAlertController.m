@@ -33,6 +33,8 @@
 #import "JVCompatibilityMRC.h"
 #import <objc/runtime.h>
 #import <UIKit/UIKit.h>
+#import "JV-legacy-SDK.h"
+
 
 // JVAlertController is not meant to be instantiated directly,
 // which is why there is no JVAlertController.h

@@ -1,10 +1,8 @@
 //
-//  JVAlertAction.h
+//  JVAlertController.m
 //  JVAlertController
 //
 //  The MIT License (MIT)
-//
-//  Copyright (c) 2015 Jared Verdi
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy of
 //  this software and associated documentation files (the "Software"), to deal in
@@ -23,22 +21,39 @@
 //  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 //  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+#if __IPHONE_OS_VERSION_MAX_ALLOWED < 80000
+
 #import <UIKit/UIKit.h>
 #import "JVCompatibilityMRC.h"
-#import "JV-legacy-SDK.h"
 
-@interface JVAlertAction : NSObject <NSCopying>
 
-@property (nonatomic, readonly) NSString *title;
-@property (nonatomic, readonly) UIAlertActionStyle style;
-@property (nonatomic, getter=isEnabled) BOOL enabled;
+@class JVPopoverPresentationController;
+@compatibility_alias UIPopoverPresentationController JVPopoverPresentationController;
+//typedef JVPopoverPresentationController UIPopoverPresentationController;
 
-+ (instancetype)actionWithTitle:(NSString *)title style:(UIAlertActionStyle)style handler:(void (^)(UIAlertAction *action))handler;
+
+@protocol UIPopoverPresentationControllerDelegate
+@optional
+
+- (void)prepareForPopoverPresentation:(UIPopoverPresentationController *)popoverPresentationController;
+- (BOOL)popoverPresentationControllerShouldDismissPopover:(UIPopoverPresentationController *)popoverPresentationController;
+- (void)popoverPresentationControllerDidDismissPopover:(UIPopoverPresentationController *)popoverPresentationController;
+- (void)popoverPresentationController:(UIPopoverPresentationController *)popoverPresentationController
+          willRepositionPopoverToRect:(inout CGRect *)rect
+                               inView:(inout UIView **)view;
 
 @end
 
-@interface JVAlertAction ()
-@property (nonatomic, JV_STRONG_PROPERTY) NSString *title;
-@property (nonatomic) UIAlertActionStyle style;
-@property (nonatomic, copy) void (^handler)(UIAlertAction *action);
+@protocol UIPopoverBackgroundViewMethods
++ (UIEdgeInsets)contentViewInsets;
++ (CGFloat)arrowBase;
++ (CGFloat)arrowHeight;
 @end
+
+#endif
+
+#if __IPHONE_OS_VERSION_MAX_ALLOWED < 70000
+@interface UIPopoverController (JVPopoverController)
+@property (nonatomic, copy) UIColor *backgroundColor;
+@end
+#endif

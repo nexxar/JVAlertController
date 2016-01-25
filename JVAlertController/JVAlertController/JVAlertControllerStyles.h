@@ -48,6 +48,7 @@ extern const CGFloat kJVActionSheetPopoverWidth;
 extern const CGFloat kJVActionSheetCornerRadius;
 extern const CGFloat kJVActionSheetCancelButtonCornerRadius;
 extern const CGFloat kJVActionSheetButtonHeight;
+extern const CGFloat kJVActionSheetButtonSpacing_legacyiOS;
 extern const CGFloat kJVActionSheetButtonHPadding;
 extern const CGFloat kJVActionSheetButtonVPaddingTop;
 extern const CGFloat kJVActionSheetButtonVPaddingBottom;

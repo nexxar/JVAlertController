@@ -1,10 +1,8 @@
 //
-//  JVAlertTransitionDelegate.h
+//  JVAlertController.m
 //  JVAlertController
 //
 //  The MIT License (MIT)
-//
-//  Copyright (c) 2015 Jared Verdi
 //
 //  Permission is hereby granted, free of charge, to any person obtaining a copy of
 //  this software and associated documentation files (the "Software"), to deal in
@@ -23,10 +21,22 @@
 //  IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 //  CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+#import <objc/runtime.h>
 #import <UIKit/UIKit.h>
-#import "JV-legacy-SDK.h"
 
-@interface JVAlertTransitionDelegate : NSObject <UIViewControllerTransitioningDelegate,
-    UIViewControllerAnimatedTransitioning>
 
+// just for debugging on iOS5 simuolator. All protocols are compiled into your binary if you compile with the new SDK
+#if __IPHONE_OS_VERSION_MAX_ALLOWED < 70000
+
+typedef enum {
+    UIViewTintAdjustmentModeAutomatic,
+    UIViewTintAdjustmentModeNormal,
+    UIViewTintAdjustmentModeDimmed,
+} UIViewTintAdjustmentMode;
+
+@interface UIView (JVAlertController)
+@property(nonatomic) UIViewTintAdjustmentMode tintAdjustmentMode;
 @end
+
+#endif
+

@@ -40,6 +40,7 @@
 @property(nonatomic, readonly) UIPopoverArrowDirection arrowDirection;
 @property(nonatomic, readwrite, JV_WEAK_PROPERTY) UIPopoverController *jv_legacyPopoverController;
 @end
+#import "JV-legacy-SDK.h"
 
 @implementation JVPopoverPresentationController
 

@@ -27,6 +27,7 @@
 #import <UIKit/UIKit.h>
 #import "UIViewController+JVAlertController.h"
 #import "JVCompatibilityMRC.h"
+#import "JV-legacy-SDK.h"
 
 #define JVAC_SYSTEM_VERSION_GTE(v) \
 ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending)

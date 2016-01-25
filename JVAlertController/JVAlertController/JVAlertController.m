@@ -44,6 +44,8 @@
 // Once this class and its accompanying files are imported into your project,
 // you can use the standard UIAlertController APIs freely on iOS 7
 
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
+
 @interface JVAlertController : UIViewController
 
 @property (nonatomic, readonly) NSArray *actions;
@@ -62,6 +64,7 @@
 - (void)addTextFieldWithConfigurationHandler:(void (^)(UITextField *textField))configurationHandler;
 
 @end
+#endif
 
 @interface JVAlertController ()
 @property (nonatomic, JV_STRONG_PROPERTY) NSArray *actions;
@@ -108,6 +111,8 @@
 @end
 
 @implementation JVAlertController
+
+@dynamic title;
 
 @synthesize actions = _actions;
 
@@ -210,7 +215,7 @@
 
 - (CGSize)preferredContentSize
 {
-    if (![self isPad]) {
+    if (![self isPad] && [super respondsToSelector:@selector(preferredContentSize)]) {
         return [super preferredContentSize];
     }
     
@@ -260,13 +265,17 @@
         JVAlertTransitionDelegate *newDelegate = [JVAlertTransitionDelegate new];
         self.alertTransitionDelegate = newDelegate;
         JV_RELEASE_OBJECT(newDelegate);
-        self.transitioningDelegate = self.alertTransitionDelegate;
+        if ([self respondsToSelector:@selector(transitioningDelegate)]) {
+            self.transitioningDelegate = self.alertTransitionDelegate;
+        }
     }
     else {
         JVActionSheetTransitionDelegate *newDelegate = [JVActionSheetTransitionDelegate new];
         self.actionSheetTransitionDelegate = newDelegate;
         JV_RELEASE_OBJECT(newDelegate);
-        self.transitioningDelegate = self.actionSheetTransitionDelegate;
+        if ([self respondsToSelector:@selector(transitioningDelegate)]) {
+            self.transitioningDelegate = self.alertTransitionDelegate;
+        }
     }
 }
 
@@ -627,7 +636,9 @@ __asm(
             button.enabled = action.isEnabled;
             button.highlightedBackgroundColor = [JVAlertControllerStyles alertButtonHighlightedBackgroundColor];
             button.titleLabel.adjustsFontSizeToFitWidth = YES;
-            button.titleLabel.minimumScaleFactor = kJVAlertButtonMinimumScaleFactor;
+            if ([button.titleLabel respondsToSelector:@selector(setMinimumScaleFactor:)]) {
+                button.titleLabel.minimumScaleFactor = kJVAlertButtonMinimumScaleFactor;
+            }
             [button setTitle:action.title forState:UIControlStateNormal];
             [button setContentEdgeInsets:UIEdgeInsetsMake(kJVAlertButtonVPaddingTop,
                                                           kJVAlertButtonHPadding,

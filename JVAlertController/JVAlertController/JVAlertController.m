@@ -33,6 +33,7 @@
 #import "JVCompatibilityMRC.h"
 #import <objc/runtime.h>
 #import <UIKit/UIKit.h>
+#import "UIViewController+JVAlertController.h"
 #import "JV-legacy-SDK.h"
 
 
@@ -1107,6 +1108,10 @@ __asm(
                viewHeight - actionSheetViewSpacer - actionSheetHeight,
                kJVActionSheetWidth,
                actionSheetHeight);
+
+    if (self.isInPopover && [self respondsToSelector:@selector(setContentSizeForViewInPopover:)]) {
+        self.contentSizeForViewInPopover = [self preferredContentSize];
+    }
 }
 
 @end

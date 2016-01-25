@@ -31,8 +31,6 @@
 #import "JVPopoverPresentationController.h"
 #import "JVAlertControllerStyles.h"
 
-#define JVAC_SYSTEM_VERSION_GTE(v) \
-([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending)
 
 void (*JVAC_OrigPresentViewController)(id, SEL, UIViewController *, BOOL, void (^)(void));
 void (*JVAC_OrigDismissViewController)(id, SEL, BOOL, void (^)(void));

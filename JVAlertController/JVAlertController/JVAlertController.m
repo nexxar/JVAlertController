@@ -36,9 +36,6 @@
 #import "UIViewController+JVAlertController.h"
 #import "JV-legacy-SDK.h"
 
-#define JVAC_SYSTEM_VERSION_GTE(v) \
-([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending)
-
 
 // JVAlertController is not meant to be instantiated directly,
 // which is why there is no JVAlertController.h

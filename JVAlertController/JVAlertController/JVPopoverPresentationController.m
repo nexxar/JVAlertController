@@ -26,21 +26,8 @@
 #import <objc/runtime.h>
 #import <UIKit/UIKit.h>
 #import "JVCompatibilityMRC.h"
-
-@interface JVPopoverPresentationController : NSObject <UIPopoverControllerDelegate>
-@property (nonatomic, JV_STRONG_PROPERTY) UIView *sourceView;
-@property (nonatomic) CGRect sourceRect;
-@property (nonatomic, JV_STRONG_PROPERTY) UIBarButtonItem *barButtonItem;
-@property (nonatomic, JV_WEAK_PROPERTY) id<UIPopoverPresentationControllerDelegate> delegate;
-@property(nonatomic, readwrite) UIEdgeInsets popoverLayoutMargins;
-@property(nonatomic, copy) UIColor *backgroundColor;
-@property(nonatomic, copy) NSArray *passthroughViews;
-@property(nonatomic, readwrite, JV_STRONG_PROPERTY) Class< UIPopoverBackgroundViewMethods > popoverBackgroundViewClass;
-@property(nonatomic, assign) UIPopoverArrowDirection permittedArrowDirections;
-@property(nonatomic, readonly) UIPopoverArrowDirection arrowDirection;
-@property(nonatomic, readwrite, JV_WEAK_PROPERTY) UIPopoverController *jv_legacyPopoverController;
-@end
 #import "JV-legacy-SDK.h"
+#import "JVPopoverPresentationController.h"
 
 @implementation JVPopoverPresentationController
 

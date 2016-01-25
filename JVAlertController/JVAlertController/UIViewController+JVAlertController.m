@@ -28,6 +28,7 @@
 #import "UIViewController+JVAlertController.h"
 #import "JVCompatibilityMRC.h"
 #import "JV-legacy-SDK.h"
+#import "JVPopoverPresentationController.h"
 
 
 void (*JVAC_OrigPresentViewController)(id, SEL, UIViewController *, BOOL, void (^)(void));
